@@ -1,0 +1,232 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next/
+out/
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build outputs
+build/
+dist/
+target/
+bin/
+obj/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs
+logs
+*.log
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Blockchain development
+# Clarity contracts build artifacts
+contracts/build/
+contracts/dist/
+# Stacks CLI artifacts
+.stacks-cli/
+stacks-node-data/
+# Private keys and wallets
+*.wallet
+*.key
+*.pem
+keystore/
+wallets/
+
+# Docker
+Dockerfile.local
+docker-compose.override.yml
+.dockerignore.local
+
+# Kubernetes
+*.kubeconfig
+secrets/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Monitoring and observability
+prometheus-data/
+grafana-data/
+elasticsearch-data/
+
+# AI/ML artifacts
+models/
+*.model
+*.pkl
+*.h5
+*.onnx
+checkpoints/
+tensorboard-logs/
+
+# IPFS and decentralized storage
+.ipfs/
+ipfs-data/
+arweave-data/
+
+# Graph database
+neo4j-data/
+dgraph-data/
+graph-backups/
+
+# Configuration files with secrets
+config/production.json
+config/staging.json
+*.config.local.*
+
+# Test artifacts
+test-results/
+coverage-reports/
+*.test.log
+
+# Augment-related files
+augment/
+.augment/
+*.augment.*
+
+# PRD and planning documents
+docs/ProofGraph_PRD.md
+docs/planning/
+*.prd
+*.requirements
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Package manager locks (keep yarn.lock and package-lock.json)
+# Uncomment if using specific package manager
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
