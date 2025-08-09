@@ -1,0 +1,89 @@
+[project]
+name = "proofgraph-contracts"
+description = "ProofGraph Clarity smart contracts for decentralized knowledge graph"
+authors = ["ProofGraph Team"]
+telemetry = false
+cache_dir = "./.clarinet"
+requirements = []
+
+[contracts.proofgraph-core]
+path = "src/proofgraph-core.clar"
+depends_on = []
+
+[contracts.data-anchoring]
+path = "src/data-anchoring.clar"
+depends_on = ["proofgraph-core"]
+
+[contracts.verification-layer]
+path = "src/verification-layer.clar"
+depends_on = ["proofgraph-core"]
+
+[contracts.token-rewards]
+path = "src/token-rewards.clar"
+depends_on = ["proofgraph-core", "verification-layer"]
+
+[contracts.governance]
+path = "src/governance.clar"
+depends_on = ["proofgraph-core", "token-rewards"]
+
+# Development network configuration
+[repl.analysis]
+analysis = "enabled"
+check_checker = true
+check_type_checker = true
+
+# Testing configuration
+[repl.testing]
+test_timeout = 30000
+
+# Deployment configuration
+[networks.testnet]
+stacks_node_rpc_address = "https://stacks-node-api.testnet.stacks.co"
+bitcoin_node_rpc_address = "https://blockstream.info/testnet/api"
+bitcoin_node_p2p_address = "bitcoin-testnet.stacks.co:18333"
+
+[networks.mainnet]
+stacks_node_rpc_address = "https://stacks-node-api.mainnet.stacks.co"
+bitcoin_node_rpc_address = "https://blockstream.info/api"
+bitcoin_node_p2p_address = "bitcoin.stacks.co:8333"
+
+# Local development network
+[networks.devnet]
+stacks_node_rpc_address = "http://localhost:20443"
+bitcoin_node_rpc_address = "http://localhost:18443"
+bitcoin_node_p2p_address = "localhost:18444"
+
+# Account configurations for testing
+[[networks.devnet.accounts]]
+name = "deployer"
+address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
+balance = 100000000000000
+
+[[networks.devnet.accounts]]
+name = "wallet_1"
+address = "ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5"
+balance = 100000000000000
+
+[[networks.devnet.accounts]]
+name = "wallet_2"
+address = "ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG"
+balance = 100000000000000
+
+[[networks.devnet.accounts]]
+name = "wallet_3"
+address = "ST2JHG361ZXG51QTKY2NQCVBPPRRE2KZB1HR05NNC"
+balance = 100000000000000
+
+# Boot contracts
+[[networks.devnet.boot_contracts]]
+contract_id = "ST000000000000000000002AMW42H.pox-4"
+path = "boot_contracts/pox-4.clar"
+
+# Fee estimation
+[repl.costs]
+compute_budget = 100000000
+read_count_budget = 100000
+read_length_budget = 100000000
+runtime_budget = 100000000
+write_count_budget = 100000
+write_length_budget = 100000000

@@ -1,0 +1,35 @@
+{
+  "name": "@proofgraph/contracts",
+  "version": "0.1.0",
+  "description": "Clarity smart contracts for ProofGraph decentralized knowledge graph",
+  "main": "index.js",
+  "scripts": {
+    "dev": "clarinet develop",
+    "test": "clarinet test",
+    "build": "clarinet build",
+    "deploy:testnet": "clarinet deploy --testnet",
+    "deploy:mainnet": "clarinet deploy --mainnet",
+    "check": "clarinet check",
+    "console": "clarinet console",
+    "lint": "clarinet format --check",
+    "format": "clarinet format"
+  },
+  "keywords": [
+    "stacks",
+    "clarity",
+    "blockchain",
+    "smart-contracts",
+    "knowledge-graph"
+  ],
+  "author": "ProofGraph Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@stacks/cli": "^7.0.0",
+    "clarinet": "^2.0.0"
+  },
+  "dependencies": {
+    "@stacks/transactions": "^6.0.0",
+    "@stacks/network": "^6.0.0",
+    "@stacks/common": "^6.0.0"
+  }
+}

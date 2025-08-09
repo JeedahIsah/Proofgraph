@@ -1,0 +1,82 @@
+{
+  "name": "proofgraph",
+  "version": "0.1.0",
+  "description": "A decentralized knowledge graph enabling discovery and verification of supply chain and product data",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:services\" \"npm run dev:web\" \"npm run dev:contracts\"",
+    "dev:contracts": "cd contracts && npm run dev",
+    "dev:services": "cd services && npm run dev",
+    "dev:web": "cd web-portal && npm run dev",
+    "dev:ai": "cd services/ai-integration && npm run dev",
+    "build": "npm run build:contracts && npm run build:services && npm run build:web",
+    "build:contracts": "cd contracts && npm run build",
+    "build:services": "cd services && npm run build",
+    "build:web": "cd web-portal && npm run build",
+    "test": "npm run test:contracts && npm run test:services && npm run test:web",
+    "test:contracts": "cd contracts && npm test",
+    "test:services": "cd services && npm test",
+    "test:web": "cd web-portal && npm test",
+    "test:integration": "jest --config=tests/jest.integration.config.js",
+    "test:e2e": "playwright test",
+    "test:coverage": "npm run test -- --coverage",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "deploy:staging": "./scripts/deploy-staging.sh",
+    "deploy:production": "./scripts/deploy-production.sh",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "infra:plan": "cd infrastructure/terraform && terraform plan",
+    "infra:apply": "cd infrastructure/terraform && terraform apply",
+    "setup": "npm install && npm run setup:services && npm run setup:web && npm run setup:contracts",
+    "setup:services": "cd services && npm install",
+    "setup:web": "cd web-portal && npm install",
+    "setup:contracts": "cd contracts && npm install"
+  },
+  "keywords": [
+    "blockchain",
+    "stacks",
+    "knowledge-graph",
+    "supply-chain",
+    "decentralized",
+    "ai",
+    "verification",
+    "bitcoin",
+    "clarity"
+  ],
+  "author": "ProofGraph Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/proofgraph/proofgraph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/proofgraph/proofgraph/issues"
+  },
+  "homepage": "https://github.com/proofgraph/proofgraph#readme",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "@playwright/test": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "workspaces": [
+    "contracts",
+    "services/*",
+    "web-portal",
+    "sdk/*"
+  ]
+}
