@@ -13,6 +13,7 @@
 (define-constant ERR-DATA-TOO-LARGE (err u205))
 (define-constant ERR-CONTRACT-NOT-INITIALIZED (err u206))
 (define-constant ERR-ALREADY-EXISTS (err u102))
+(define-constant ERR-NOT-FOUND (err u104))
 
 ;; Contract deployer (admin)
 (define-constant CONTRACT-ADMIN tx-sender)
@@ -130,6 +131,65 @@
 (define-read-only (get-current-verification-id)
   (var-get verification-id-counter))
 
+;; Read-only function to get verification record by data hash
+(define-read-only (get-verification-by-hash (data-hash (buff 32)))
+  (match (map-get? data-hashes data-hash)
+    verification-id (map-get? verification-records verification-id)
+    none))
+
+;; Read-only function to check if verification ID exists
+(define-read-only (verification-exists (verification-id uint))
+  (is-some (map-get? verification-records verification-id)))
+
+;; Read-only function to get contributor's verification count
+(define-read-only (get-contributor-stats (contributor principal))
+  (let (
+    (total-records (get-system-param "total-records"))
+  )
+    ;; Note: This is a simplified version. In a production system,
+    ;; you might want to maintain a separate map for contributor statistics
+    ;; for better performance with large datasets
+    {
+      contributor: contributor,
+      estimated-contributions: u0  ;; Placeholder - would need iteration to calculate exactly
+    }))
+
+;; Read-only function to get verification history summary
+(define-read-only (get-verification-history-summary)
+  {
+    total-records: (get-system-param "total-records"),
+    total-verifications: (get-system-param "total-verifications"),
+    total-fees-collected: (get-system-param "total-fees-collected"),
+    current-verification-id: (var-get verification-id-counter),
+    contract-initialized: (var-get contract-initialized)
+  })
+
+;; Read-only function to get detailed system metrics
+(define-read-only (get-detailed-system-metrics)
+  {
+    contract-version: CONTRACT-VERSION,
+    contract-admin: CONTRACT-ADMIN,
+    total-records: (get-system-param "total-records"),
+    total-verifications: (get-system-param "total-verifications"),
+    total-fees-collected: (get-system-param "total-fees-collected"),
+    min-fee: (get-system-param "min-fee"),
+    max-data-size: (get-system-param "max-data-size"),
+    current-verification-id: (var-get verification-id-counter),
+    contract-initialized: (var-get contract-initialized),
+    current-block-height: block-height,
+    estimated-timestamp: (get-current-timestamp)
+  })
+
+;; Read-only function to validate verification parameters
+(define-read-only (validate-verification-params 
+    (verification-id uint)
+    (data-hash (buff 32)))
+  {
+    valid-verification-id: (verification-exists verification-id),
+    valid-data-hash: (is-valid-data-hash data-hash),
+    contract-initialized: (var-get contract-initialized)
+  })
+
 ;; Public function to anchor data with validation
 (define-public (anchor-data 
     (data-hash (buff 32))
@@ -188,3 +248,55 @@
     
     ;; Return verification ID
     (ok verification-id)))
+
+;; Public function to verify data integrity against stored verification record
+(define-public (verify-data 
+    (verification-id uint)
+    (data-hash (buff 32)))
+  (let (
+    (verification-record (map-get? verification-records verification-id))
+    (current-timestamp (get-current-timestamp))
+  )
+    ;; Validate contract is initialized
+    (asserts! (var-get contract-initialized) ERR-CONTRACT-NOT-INITIALIZED)
+    
+    ;; Validate data hash format
+    (asserts! (is-valid-data-hash data-hash) ERR-INVALID-DATA)
+    
+    ;; Check if verification record exists
+    (match verification-record
+      record
+      (let (
+        (stored-hash (get data-hash record))
+        (contributor (get contributor record))
+        (timestamp (get timestamp record))
+        (current-count (get verification-count record))
+        (verified (is-eq data-hash stored-hash))
+      )
+        ;; Update verification count
+        (map-set verification-records verification-id 
+          (merge record { verification-count: (+ current-count u1) }))
+        
+        ;; Update system verification statistics
+        (map-set system-config "total-verifications" 
+          (+ (get-system-param "total-verifications") u1))
+        
+        ;; Emit verification event
+        (print {
+          event: "data-verified",
+          verification-id: verification-id,
+          contributor: contributor,
+          verified: verified,
+          verifier: tx-sender,
+          timestamp: current-timestamp
+        })
+        
+        ;; Return verification result with metadata
+        (ok {
+          contributor: contributor,
+          timestamp: timestamp,
+          verified: verified
+        }))
+      
+      ;; Verification ID not found
+      (err u104))))  ;; ERR-NOT-FOUND
