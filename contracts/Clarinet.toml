@@ -14,23 +14,9 @@ depends_on = []
 path = "src/data-anchoring.clar"
 depends_on = ["proofgraph-core"]
 
-[contracts.verification-layer]
-path = "src/verification-layer.clar"
-depends_on = ["proofgraph-core"]
-
-[contracts.token-rewards]
-path = "src/token-rewards.clar"
-depends_on = ["proofgraph-core", "verification-layer"]
-
-[contracts.governance]
-path = "src/governance.clar"
-depends_on = ["proofgraph-core", "token-rewards"]
-
 # Development network configuration
 [repl.analysis]
 analysis = "enabled"
-check_checker = true
-check_type_checker = true
 
 # Testing configuration
 [repl.testing]

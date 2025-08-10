@@ -225,6 +225,9 @@ temp/
 *.tmp
 *.temp
 
+# Kiro IDE configuration and specs
+.kiro/
+
 # Package manager locks (keep yarn.lock and package-lock.json)
 # Uncomment if using specific package manager
 # package-lock.json
