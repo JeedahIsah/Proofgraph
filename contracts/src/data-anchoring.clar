@@ -6,15 +6,13 @@
 
 ;; Error constants specific to data verification
 (define-constant ERR-NOT-AUTHORIZED (err u100))
-(define-constant ERR-DATA-EXISTS (err u101))
-(define-constant ERR-INSUFFICIENT-FEE (err u102))
-(define-constant ERR-INVALID-DATA (err u103))
-(define-constant ERR-NOT-FOUND (err u104))
-(define-constant ERR-SYSTEM-ERROR (err u105))
-(define-constant ERR-INVALID-METADATA (err u106))
-(define-constant ERR-DATA-TOO-LARGE (err u107))
-(define-constant ERR-ALREADY-EXISTS (err u108))
-(define-constant ERR-CONTRACT-NOT-INITIALIZED (err u109))
+(define-constant ERR-DATA-EXISTS (err u201))
+(define-constant ERR-INSUFFICIENT-FEE (err u202))
+(define-constant ERR-INVALID-DATA (err u203))
+(define-constant ERR-INVALID-METADATA (err u204))
+(define-constant ERR-DATA-TOO-LARGE (err u205))
+(define-constant ERR-CONTRACT-NOT-INITIALIZED (err u206))
+(define-constant ERR-ALREADY-EXISTS (err u102))
 
 ;; Contract deployer (admin)
 (define-constant CONTRACT-ADMIN tx-sender)
@@ -48,8 +46,9 @@
 (define-data-var verification-id-counter uint u0)
 
 ;; Contract initialization flag
-(define-data-var contract-initialized bool false);
-; Initialize contract with default parameters
+(define-data-var contract-initialized bool false)
+
+;; Initialize contract with default parameters
 (define-public (initialize-contract)
   (begin
     (asserts! (is-eq tx-sender CONTRACT-ADMIN) ERR-NOT-AUTHORIZED)
@@ -130,3 +129,62 @@
 ;; Read-only function to get current verification ID counter
 (define-read-only (get-current-verification-id)
   (var-get verification-id-counter))
+
+;; Public function to anchor data with validation
+(define-public (anchor-data 
+    (data-hash (buff 32))
+    (metadata-uri (string-ascii 256))
+    (fee uint))
+  (let (
+    (min-fee (get-system-param "min-fee"))
+    (verification-id (get-next-verification-id))
+    (current-timestamp (get-current-timestamp))
+  )
+    ;; Validate contract is initialized
+    (asserts! (var-get contract-initialized) ERR-CONTRACT-NOT-INITIALIZED)
+    
+    ;; Validate data hash format
+    (asserts! (is-valid-data-hash data-hash) ERR-INVALID-DATA)
+    
+    ;; Validate metadata URI
+    (asserts! (is-valid-metadata-uri metadata-uri) ERR-INVALID-METADATA)
+    
+    ;; Check if data hash already exists (prevent duplicates)
+    (asserts! (not (data-hash-exists data-hash)) ERR-DATA-EXISTS)
+    
+    ;; Validate fee meets minimum requirement
+    (asserts! (>= fee min-fee) ERR-INSUFFICIENT-FEE)
+    
+    ;; Transfer fee to contract (STX payment)
+    (try! (stx-transfer? fee tx-sender (as-contract tx-sender)))
+    
+    ;; Store verification record
+    (map-set verification-records verification-id {
+      contributor: tx-sender,
+      data-hash: data-hash,
+      timestamp: current-timestamp,
+      metadata-uri: metadata-uri,
+      verification-count: u0,
+      fee-paid: fee
+    })
+    
+    ;; Track data hash to prevent duplicates
+    (map-set data-hashes data-hash verification-id)
+    
+    ;; Update system statistics
+    (map-set system-config "total-records" (+ (get-system-param "total-records") u1))
+    (map-set system-config "total-fees-collected" (+ (get-system-param "total-fees-collected") fee))
+    
+    ;; Emit data anchoring event
+    (print {
+      event: "data-anchored",
+      verification-id: verification-id,
+      contributor: tx-sender,
+      data-hash: data-hash,
+      metadata-uri: metadata-uri,
+      fee-paid: fee,
+      timestamp: current-timestamp
+    })
+    
+    ;; Return verification ID
+    (ok verification-id)))
