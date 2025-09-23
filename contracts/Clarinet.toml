@@ -7,8 +7,16 @@ cache_dir = "./.clarinet"
 requirements = []
 
 [contracts.data-anchoring]
-path = "src/data-anchoring.clar"
+path = "src/data-anchoring-fixed.clar"
 depends_on = []
+
+[contracts.pg-token]
+path = "src/pg-token.clar"
+depends_on = []
+
+[contracts.pg-staking]
+path = "src/pg-staking.clar"
+depends_on = ["pg-token"]
 
 # Development network configuration
 [repl.analysis]
