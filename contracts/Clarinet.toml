@@ -6,13 +6,9 @@ telemetry = false
 cache_dir = "./.clarinet"
 requirements = []
 
-[contracts.proofgraph-core]
-path = "src/proofgraph-core.clar"
-depends_on = []
-
 [contracts.data-anchoring]
 path = "src/data-anchoring.clar"
-depends_on = ["proofgraph-core"]
+depends_on = []
 
 # Development network configuration
 [repl.analysis]
