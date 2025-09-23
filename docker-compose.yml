@@ -142,6 +142,32 @@ services:
     depends_on:
       - elasticsearch
 
+  # ProofGraph Verification Service
+  verification-service:
+    build:
+      context: ./services/verification
+      dockerfile: Dockerfile
+    container_name: proofgraph-verification
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - LOG_LEVEL=info
+      - STACKS_NETWORK=devnet
+      - STACKS_NODE_URL=http://host.docker.internal:20443
+      - STACKS_PRIVATE_KEY=753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601
+      - CONTRACT_ADDRESS=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+      - CONTRACT_NAME=data-anchoring
+      - API_PREFIX=/api/v1
+      - CORS_ORIGIN=http://localhost:3001
+    networks:
+      - proofgraph-network
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - postgres
+
 volumes:
   neo4j_data:
   neo4j_logs:
